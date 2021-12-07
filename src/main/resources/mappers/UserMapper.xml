@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 后面写的是这个映射文件对应的接口的包和接口名-->
+
+<mapper namespace="com.example.ssm.mapper.UserMapper">
+
+
+
+<!--    接口中有几个方法这里就要放几个对应的<select> <insert>  <update> <delete>-->
+<!--    id 是方法的名字  parameterType 是对应方法中参数的类型-->
+<!--    只有查询操作可以写返回类型，其余增删改不需要写返回类型-->
+    <!--#{id}就类似与以前JDBC中的占位符?-->
+    <!--#{loginCount}此处的名字必须和实体中的属性名一致-->
+    <resultMap id="userResultMap" type="com.example.ssm.domain.User">
+<!--        resultMap的作用是将实体的属性名和数据库的列名对应到一起-->
+        <!--id表示主键，result表示普通列-->
+        <!--property表示实体中属性的名字，column表示列名-->
+        <id property="id" column="id" javaType="int" jdbcType="INTEGER"
+            typeHandler="org.apache.ibatis.type.IntegerTypeHandler"/>
+        <result property="email" column="email" />
+        <result property="password" column="password" />
+        <result property="birthday" column="birthday" jdbcType="DATE" javaType="java.time.LocalDate"
+                typeHandler="org.apache.ibatis.type.LocalDateTypeHandler"/>
+        <result property="sex" column="sex" />
+        <result property="loginCount" column="login_count" />
+        <result property="lastLoginTime" column="last_login_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP"
+                typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+
+
+<!--        <id property="id" column="id" />-->
+<!--        <result property="email" column="email" />-->
+<!--        <result property="password" column="password" />-->
+<!--        <result property="birthday" column="birthday" />-->
+<!--        <result property="sex" column="sex" />-->
+<!--        <result property="loginCount" column="login_count" />-->
+<!--        <result property="lastLoginTime" column="last_login_time" />-->
+
+    </resultMap>
+    <sql id="columnsAll">id, email, password, birthday, sex, login_count, last_login_time</sql>
+    <sql id="columnsAllNoId">email, password, birthday, sex, login_count, last_login_time</sql>
+
+
+    <insert id="save" parameterType="com.example.ssm.domain.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into users(<include refid="columnsAllNoId"/>)
+        values (#{email}, #{password},  #{birthday, javaType=java.time.LocalDate, jdbcType=DATE, typeHandler=org.apache.ibatis.type.LocalDateTypeHandler},  #{sex},  #{loginCount},  #{lastLoginTime})
+    </insert>
+
+
+    <!--    <insert id="save" parameterType="User">-->
+    <!--        insert into users(email, password, birthday, sex, login_count, last_login_time)-->
+    <!--        values (#{email}, #{password},  #{birthday},  #{sex},  #{loginCount},  #{lastLoginTime})-->
+    <!--    </insert>-->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from users where id=#{id}
+    </delete>
+    <update id="updateById" parameterType="com.example.ssm.domain.User">
+<!--        update users-->
+<!--        <set>-->
+<!--        <if test="email!=null">email=#{email},</if>-->
+<!--        <if test="password!=null">password=#{password},</if>-->
+<!--        <if test="birthday!=null">birthday=#{birthday},</if>-->
+<!--        <if test="sex!=null">sex=#{sex},</if>-->
+<!--        </set>-->
+<!--        where id = #{id}-->
+
+        update users
+        <set>
+            <if test="email!= null">email=#{email},</if>
+            <if test="password!= null">password=#{password},</if>
+            <if test="birthday!= null">birthday=#{birthday},</if>
+            <if test="sex!= null">sex=#{sex},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="findOne" parameterType="java.lang.Integer" resultMap="userResultMap">
+        select id, email, password, birthday, sex, login_count, last_login_time from users where id=#{id}
+    </select>
+
+
+    <select id="findAll" resultMap="userResultMap">
+        select id, email, password, birthday, sex, login_count, last_login_time from users
+    </select>
+</mapper>

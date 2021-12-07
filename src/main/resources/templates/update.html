@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>更新</title>
+</head>
+<body>
+<form action="update" method="post">
+
+    <input name="id" th:value="${user.id}" readonly/> <br>
+    <input name="email" th:value="${user.email}"/> <br>
+    <input name="password" type="password" th:value="${user.password}"/> <br>
+
+    <input name="birthday" type="date" th:value="${user.birthday}"/> <br>
+    <select name="sex">
+        <option value="M">男</option>
+        <option value="F">女</option>
+        <select><br>
+    <input type="submit" value="修改" />
+</form>
+</body>
+</html>
